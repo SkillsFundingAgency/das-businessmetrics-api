@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;
 using SFA.DAS.BusinessMetrics.Application.Mediatr.Behaviours;
+using SFA.DAS.BusinessMetrics.Domain.Extensions;
 
 namespace SFA.DAS.BusinessMetrics.Application.Extensions
 {
@@ -14,6 +15,7 @@ namespace SFA.DAS.BusinessMetrics.Application.Extensions
             services.AddMediatR(typeof(ServiceCollectionExtensions));
             services.AddValidatorsFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+            services.RegisterServices();
         }
     }
 }

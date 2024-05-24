@@ -11,8 +11,14 @@ using SFA.DAS.BusinessMetrics.Application.Extensions;
 using SFA.DAS.Configuration.AzureTableStorage;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using Azure.Identity;
+using Azure.Monitor.Query;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SFA.DAS.BusinessMetrics.Api.HealthCheck;
+using Microsoft.Extensions.Options;
+using SFA.DAS.BusinessMetrics.Api.AppStart;
+using SFA.DAS.BusinessMetrics.Domain.Configuration;
+using SFA.DAS.BusinessMetrics.Domain.Interfaces.Configuration;
 
 namespace SFA.DAS.BusinessMetrics.Api
 {
@@ -63,6 +69,7 @@ namespace SFA.DAS.BusinessMetrics.Api
             }
 
             services.AddApplicationInsightsTelemetry();
+            services.AddOpenTelemetryRegistration(Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
             services.AddApiVersioning(opt =>
             {
@@ -103,6 +110,8 @@ namespace SFA.DAS.BusinessMetrics.Api
 
             services.AddHealthChecks()
                 .AddCheck<BusinessMetricsHealthCheck>("Business Metrics Health Check", failureStatus: HealthStatus.Unhealthy, tags: new[] { "ready" });
+            services.Configure<MetricsConfiguration>(Configuration.GetSection(nameof(MetricsConfiguration)));
+            services.AddSingleton<IMetricsConfiguration>(serviceProvider => serviceProvider.GetRequiredService<IOptions<MetricsConfiguration>>().Value);
 
             services.AddApplicationRegistrations();
         }

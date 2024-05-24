@@ -16,7 +16,6 @@ namespace SFA.DAS.BusinessMetrics.Api.Common
 
             return new BadRequestObjectResult(FormatErrors(response.Errors));
         }
-
         
         private static List<ValidationError> FormatErrors(IEnumerable<ValidationFailure> errors)
         {
