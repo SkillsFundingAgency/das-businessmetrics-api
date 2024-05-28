@@ -12,7 +12,7 @@ namespace SFA.DAS.BusinessMetrics.Application.Extensions
     {
         public static void AddApplicationRegistrations(this IServiceCollection services)
         {
-            services.AddMediatR(typeof(ServiceCollectionExtensions));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(ServiceCollectionExtensions).Assembly));
             services.AddValidatorsFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             services.RegisterServices();
