@@ -22,12 +22,14 @@ namespace SFA.DAS.BusinessMetrics.Application.GetVacancyMetrics.Queries
             RuleFor(exp => exp.StartDate)
                 .NotEmpty()
                 .NotNull()
-                .WithMessage("Start date could not by null or empty");
+                .WithMessage("Start date could not by null or empty")
+                .LessThanOrEqualTo(exp => DateTime.UtcNow);
 
             RuleFor(exp => exp.EndDate)
                 .NotEmpty()
                 .NotNull()
-                .WithMessage("End date could not by null or empty");
+                .WithMessage("End date could not by null or empty")
+                .LessThanOrEqualTo(exp => DateTime.UtcNow);
 
             RuleFor(exp => exp.EndDate)
                 .GreaterThanOrEqualTo(exp => exp.StartDate)

@@ -26,6 +26,7 @@ namespace SFA.DAS.BusinessMetrics.Api
     public class Startup
     {
         private readonly string _environmentName;
+        private IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
@@ -45,8 +46,6 @@ namespace SFA.DAS.BusinessMetrics.Api
 
             Configuration = config.Build();
         }
-
-        public IConfiguration Configuration { get; }
 
         private bool IsEnvironmentLocalOrDev =>
             _environmentName.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase)
@@ -68,7 +67,6 @@ namespace SFA.DAS.BusinessMetrics.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddApplicationInsightsTelemetry();
             services.AddOpenTelemetryRegistration(Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
             services.AddApiVersioning(opt =>
@@ -108,11 +106,8 @@ namespace SFA.DAS.BusinessMetrics.Api
                     options.OperationFilter<SwaggerVersionHeaderFilter>();
                 });
 
-            services.AddHealthChecks()
-                .AddCheck<BusinessMetricsHealthCheck>("Business Metrics Health Check", failureStatus: HealthStatus.Unhealthy, tags: new[] { "ready" });
-            services.Configure<MetricsConfiguration>(Configuration.GetSection(nameof(MetricsConfiguration)));
-            services.AddSingleton<IMetricsConfiguration>(serviceProvider => serviceProvider.GetRequiredService<IOptions<MetricsConfiguration>>().Value);
-
+            services.AddServiceHealthChecks();
+            services.AddConfigurationOptions(Configuration);
             services.AddApplicationRegistrations();
         }
 
@@ -138,24 +133,12 @@ namespace SFA.DAS.BusinessMetrics.Api
                 ResponseWriter = (context, report) =>
                 {
                     context.Response.ContentType = "application/json";
-                    return context.Response.WriteAsync("");
+                    return context.Response.WriteAsync(!IsEnvironmentLocalOrDev ? "pong" : "");
                 }
             });
 
             app.UseHttpsRedirection();
             app.UseRouting();
-
-            if (!IsEnvironmentLocalOrDev)
-                app.UseHealthChecks("/ping",
-                    new HealthCheckOptions
-                    {
-                        Predicate = _ => false,
-                        ResponseWriter = (context, report) =>
-                        {
-                            context.Response.ContentType = "application/json";
-                            return context.Response.WriteAsync("pong");
-                        }
-                    });
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }

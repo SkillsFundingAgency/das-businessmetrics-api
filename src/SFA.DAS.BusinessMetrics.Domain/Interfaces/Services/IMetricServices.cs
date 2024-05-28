@@ -4,6 +4,6 @@
     {
         List<string> GetMetricServiceNames();
 
-        Task<long> GetVacancyMetrics(string metricName, string vacancyReference, DateTime startDate, DateTime endDate, CancellationToken token);
+        Task<long> GetVacancyViews(string metricName, string vacancyReference, DateTime startDate, DateTime endDate, CancellationToken token);
     }
 }

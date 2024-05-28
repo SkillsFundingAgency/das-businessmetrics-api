@@ -8,7 +8,7 @@ namespace SFA.DAS.BusinessMetrics.Api.HealthCheck
 
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new())
         {
-            return HealthCheckResult.Healthy(HealthCheckResultDescription);
+            return await Task.Run(() => HealthCheckResult.Healthy(HealthCheckResultDescription), cancellationToken);
         }
     }
 }

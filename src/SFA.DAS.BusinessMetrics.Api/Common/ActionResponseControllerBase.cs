@@ -8,8 +8,6 @@ namespace SFA.DAS.BusinessMetrics.Api.Common
     [ExcludeFromCodeCoverage]
     public abstract class ActionResponseControllerBase : ControllerBase
     {
-        protected abstract string ControllerName { get; }
-
         protected IActionResult GetResponse<T>(ValidatedResponse<T> response) where T : class
         {
             if (response.IsValidResponse) return new OkObjectResult(response.Result);

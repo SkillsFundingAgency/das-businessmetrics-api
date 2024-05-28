@@ -20,7 +20,7 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
             return _metricConfiguration.VacancyViewsConfig.Select(fil => fil.ServiceName).ToList();
         }
 
-        public async Task<long> GetVacancyMetrics(string serviceName, string vacancyReference, DateTime startDate, DateTime endDate, CancellationToken token)
+        public async Task<long> GetVacancyViews(string serviceName, string vacancyReference, DateTime startDate, DateTime endDate, CancellationToken token)
         {
             var config = _metricConfiguration.VacancyViewsConfig
                 .SingleOrDefault(fil => fil.ServiceName.Equals(serviceName, StringComparison.CurrentCultureIgnoreCase));
@@ -40,7 +40,7 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
                 new QueryTimeRange(startDate, endDate),
                 token);
 
-            if (result.Rows is { Count: > 0 })
+            if (result is { Rows.Count: > 0 })
             {
                 return result.Rows.FirstOrDefault()!.GetInt64("sum_value") ?? 0;
             }

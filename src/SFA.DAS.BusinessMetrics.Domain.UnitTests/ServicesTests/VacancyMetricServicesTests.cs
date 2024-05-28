@@ -46,7 +46,7 @@ namespace SFA.DAS.BusinessMetrics.Domain.UnitTests.ServicesTests
             var sut = new VacancyMetricServices(mockLogger.Object, mockOptions.Object,
                 mockLogsQueryClient.Object);
 
-            Assert.ThrowsAsync<ConfigurationErrorsException>(() => sut.GetVacancyMetrics(serviceName, vacancyReference, startDate, endDate, CancellationToken.None));
+            Assert.ThrowsAsync<ConfigurationErrorsException>(() => sut.GetVacancyViews(serviceName, vacancyReference, startDate, endDate, CancellationToken.None));
 
             mockLogger.Verify(l =>
                 l.Log(
@@ -74,7 +74,7 @@ namespace SFA.DAS.BusinessMetrics.Domain.UnitTests.ServicesTests
             };
             var rowArray = new LogsTableRow[]
             {
-                MonitorQueryModelFactory.LogsTableRow(logsTableColumns, new object[] { viewsCount })
+                MonitorQueryModelFactory.LogsTableRow(logsTableColumns, [viewsCount])
             };
             var logsTable = MonitorQueryModelFactory.LogsTable("tester", logsTableColumns.AsEnumerable(), rowArray.AsEnumerable());
 
@@ -87,9 +87,42 @@ namespace SFA.DAS.BusinessMetrics.Domain.UnitTests.ServicesTests
             var sut = new VacancyMetricServices(mockLogger.Object, mockOptions.Object,
                 mockLogsQueryClient.Object);
 
-            var actual = await sut.GetVacancyMetrics(config!.ServiceName, vacancyReference, startDate, endDate, CancellationToken.None);
+            var actual = await sut.GetVacancyViews(config!.ServiceName, vacancyReference, startDate, endDate, CancellationToken.None);
 
             actual.Should().Be(viewsCount);
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetVacancyMetrics_Returns_Zero_When_No_Results_Found(
+            string vacancyReference,
+            DateTime startDate,
+            DateTime endDate,
+            [Frozen] Mock<ILogsQueryClient> mockLogsQueryClient,
+            [Frozen] Mock<ILogger<VacancyMetricServices>> mockLogger,
+            [Frozen] Mock<IOptions<MetricsConfiguration>> mockOptions)
+        {
+            var logsTableColumns = new LogsTableColumn[]
+            {
+                MonitorQueryModelFactory.LogsTableColumn("sum_value", LogsColumnType.String)
+            };
+            var rowArray = new LogsTableRow[]
+            {
+                MonitorQueryModelFactory.LogsTableRow(logsTableColumns, [0])
+            };
+            var logsTable = MonitorQueryModelFactory.LogsTable("tester", logsTableColumns.AsEnumerable(), rowArray.AsEnumerable());
+
+            var config = mockOptions.Object.Value.VacancyViewsConfig.FirstOrDefault();
+
+            mockLogsQueryClient.Setup(x => x.ProcessQuery(It.IsAny<ResourceIdentifier>(), It.IsAny<string>(),
+                    It.IsAny<QueryTimeRange>(), CancellationToken.None))
+                .ReturnsAsync(logsTable);
+
+            var sut = new VacancyMetricServices(mockLogger.Object, mockOptions.Object,
+                mockLogsQueryClient.Object);
+
+            var actual = await sut.GetVacancyViews(config!.ServiceName, vacancyReference, startDate, endDate, CancellationToken.None);
+
+            actual.Should().Be(0);
         }
     }
 }

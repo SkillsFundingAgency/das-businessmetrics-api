@@ -8,9 +8,9 @@ using SFA.DAS.BusinessMetrics.Application.GetVacancyMetrics.Queries;
 using SFA.DAS.BusinessMetrics.Application.Mediatr.Responses;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.BusinessMetrics.Api.UnitTests.Controllers.Metrics
+namespace SFA.DAS.BusinessMetrics.Api.UnitTests.Controllers.Vacancy
 {
-    public class MetricsControllerGetVacancyMetricsTests
+    public class VacancyMetricsControllerGetVacancyMetricsTests
     {
         [Test]
         [MoqAutoData]
@@ -20,12 +20,12 @@ namespace SFA.DAS.BusinessMetrics.Api.UnitTests.Controllers.Metrics
             DateTime startDate,
             DateTime endDate,
             [Frozen] Mock<IMediator> mediatorMock,
-            [Greedy] MetricsController sut,
+            [Greedy] VacancyMetricsController sut,
             GetVacancyMetricsQueryResult getMetricNamesQueryResult)
         {
             var response = new ValidatedResponse<GetVacancyMetricsQueryResult>(getMetricNamesQueryResult);
 
-            mediatorMock.Setup(m => m.Send(It.Is<GetVacancyMetricsQuery>(q => 
+            mediatorMock.Setup(m => m.Send(It.Is<GetVacancyMetricsQuery>(q =>
                         q.ServiceName == serviceName
                         && q.VacancyReference == vacancyReference
                         && q.StartDate == startDate

@@ -2,6 +2,6 @@
 {
     public record GetVacancyMetricsQueryResult
     {
-        public long Count { get; init; }
+        public long VacancyViews { get; init; }
     }
 }
