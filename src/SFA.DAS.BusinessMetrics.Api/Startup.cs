@@ -7,18 +7,11 @@ using Newtonsoft.Json.Converters;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
+using SFA.DAS.BusinessMetrics.Api.AppStart;
 using SFA.DAS.BusinessMetrics.Application.Extensions;
 using SFA.DAS.Configuration.AzureTableStorage;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using Azure.Identity;
-using Azure.Monitor.Query;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using SFA.DAS.BusinessMetrics.Api.HealthCheck;
-using Microsoft.Extensions.Options;
-using SFA.DAS.BusinessMetrics.Api.AppStart;
-using SFA.DAS.BusinessMetrics.Domain.Configuration;
-using SFA.DAS.BusinessMetrics.Domain.Interfaces.Configuration;
 
 namespace SFA.DAS.BusinessMetrics.Api
 {
