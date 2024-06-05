@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EBE1FAB2-C841-4733-88E4-2047A9F13E23}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.BusinessMetrics.Application", "SFA.DAS.BusinessMetrics.Application\SFA.DAS.BusinessMetrics.Application.csproj", "{5A28F954-3CF1-48D6-81AC-BD9952E481CE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.BusinessMetrics.Domain", "SFA.DAS.BusinessMetrics.Domain\SFA.DAS.BusinessMetrics.Domain.csproj", "{00F8B798-8104-4B50-8B93-4CF9BF6FB138}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.BusinessMetrics.Api", "SFA.DAS.BusinessMetrics.Api\SFA.DAS.BusinessMetrics.Api.csproj", "{586B839E-1EB5-4D6D-B61D-219FE5412F2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.BusinessMetrics.Api.UnitTests", "SFA.DAS.BusinessMetrics.Api.UnitTests\SFA.DAS.BusinessMetrics.Api.UnitTests.csproj", "{3724B72E-4D53-4E8A-87E0-DD20FDEE752C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.BusinessMetrics.Application.UnitTests", "SFA.DAS.BusinessMetrics.Application.UnitTests\SFA.DAS.BusinessMetrics.Application.UnitTests.csproj", "{81A04C38-96B7-4D7E-A255-66105360B305}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.BusinessMetrics.Domain.UnitTests", "SFA.DAS.BusinessMetrics.Domain.UnitTests\SFA.DAS.BusinessMetrics.Domain.UnitTests.csproj", "{32879F1C-21C6-46E3-80D4-DDEDAB53E564}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A28F954-3CF1-48D6-81AC-BD9952E481CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A28F954-3CF1-48D6-81AC-BD9952E481CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A28F954-3CF1-48D6-81AC-BD9952E481CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A28F954-3CF1-48D6-81AC-BD9952E481CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00F8B798-8104-4B50-8B93-4CF9BF6FB138}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00F8B798-8104-4B50-8B93-4CF9BF6FB138}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00F8B798-8104-4B50-8B93-4CF9BF6FB138}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00F8B798-8104-4B50-8B93-4CF9BF6FB138}.Release|Any CPU.Build.0 = Release|Any CPU
+		{586B839E-1EB5-4D6D-B61D-219FE5412F2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{586B839E-1EB5-4D6D-B61D-219FE5412F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{586B839E-1EB5-4D6D-B61D-219FE5412F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{586B839E-1EB5-4D6D-B61D-219FE5412F2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3724B72E-4D53-4E8A-87E0-DD20FDEE752C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3724B72E-4D53-4E8A-87E0-DD20FDEE752C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3724B72E-4D53-4E8A-87E0-DD20FDEE752C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3724B72E-4D53-4E8A-87E0-DD20FDEE752C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81A04C38-96B7-4D7E-A255-66105360B305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81A04C38-96B7-4D7E-A255-66105360B305}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81A04C38-96B7-4D7E-A255-66105360B305}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81A04C38-96B7-4D7E-A255-66105360B305}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32879F1C-21C6-46E3-80D4-DDEDAB53E564}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32879F1C-21C6-46E3-80D4-DDEDAB53E564}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32879F1C-21C6-46E3-80D4-DDEDAB53E564}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32879F1C-21C6-46E3-80D4-DDEDAB53E564}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3724B72E-4D53-4E8A-87E0-DD20FDEE752C} = {EBE1FAB2-C841-4733-88E4-2047A9F13E23}
+		{81A04C38-96B7-4D7E-A255-66105360B305} = {EBE1FAB2-C841-4733-88E4-2047A9F13E23}
+		{32879F1C-21C6-46E3-80D4-DDEDAB53E564} = {EBE1FAB2-C841-4733-88E4-2047A9F13E23}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {62D3BB31-2C36-46DA-ABCA-D0F533D79BAD}
+	EndGlobalSection
+EndGlobal
