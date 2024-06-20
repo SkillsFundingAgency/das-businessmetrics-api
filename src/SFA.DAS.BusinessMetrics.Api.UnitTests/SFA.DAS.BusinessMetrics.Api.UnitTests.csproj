@@ -25,6 +25,7 @@
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="17.1.94" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
   <ItemGroup>
