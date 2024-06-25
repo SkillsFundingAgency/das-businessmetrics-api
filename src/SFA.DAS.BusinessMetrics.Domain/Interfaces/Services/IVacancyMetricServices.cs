@@ -3,8 +3,8 @@
     public interface IVacancyMetricServices
     {
         Task<long> GetVacancyMetrics(
-            string resourceIdentifier,
-            string counterName,
+            string serviceName,
+            string action,
             string vacancyReference,
             DateTime startDate,
             DateTime endDate,
