@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using SFA.DAS.BusinessMetrics.Domain.Configuration;
-using SFA.DAS.BusinessMetrics.Domain.Interfaces.Configuration;
+﻿using SFA.DAS.BusinessMetrics.Domain.Configuration;
 
 namespace SFA.DAS.BusinessMetrics.Api.AppStart
 {
@@ -11,7 +9,7 @@ namespace SFA.DAS.BusinessMetrics.Api.AppStart
             IConfiguration configuration)
         {
             services.Configure<MetricsConfiguration>(configuration.GetSection(nameof(MetricsConfiguration)));
-            services.AddSingleton<IMetricsConfiguration>(serviceProvider => serviceProvider.GetRequiredService<IOptions<MetricsConfiguration>>().Value);
+            services.Configure<ServicesConfiguration>(configuration.GetSection(nameof(ServicesConfiguration)));
         }
     }
 }

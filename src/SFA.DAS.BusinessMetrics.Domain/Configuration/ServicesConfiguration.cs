@@ -2,8 +2,8 @@
 
 namespace SFA.DAS.BusinessMetrics.Domain.Configuration
 {
-    public class MetricsConfiguration
+    public class ServicesConfiguration
     {
-        public List<MetricsCounterConfig> CustomMetrics { get; set; } = [];
+        public List<ResourceConfig> Resources { get; set; } = [];
     }
 }

@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.BusinessMetrics.Api.Controllers;
+using SFA.DAS.BusinessMetrics.Application.GetMetricNames.Queries;
 using SFA.DAS.BusinessMetrics.Application.GetVacancyMetrics.Queries;
 using SFA.DAS.BusinessMetrics.Application.Mediatr.Responses;
 using SFA.DAS.Testing.AutoFixture;
@@ -12,6 +13,21 @@ namespace SFA.DAS.BusinessMetrics.Api.UnitTests.Controllers.Vacancy
 {
     public class VacancyMetricsControllerGetVacancyMetricsTests
     {
+
+        [Test, MoqAutoData]
+        public async Task GetVacancyMetrics_InvokesQueryHandler(
+            string serviceName,
+            string vacancyReference,
+            DateTime startDate,
+            DateTime endDate,
+            [Frozen] Mock<IMediator> mediatorMock,
+            [Greedy] VacancyMetricsController sut,
+            GetVacancyMetricsQueryResult getMetricNamesQueryResult)
+        {
+            var result = await sut.GetVacancyMetrics(serviceName, vacancyReference, startDate, endDate);
+            mediatorMock.Verify(m => m.Send(It.IsAny<GetVacancyMetricsQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
         [Test]
         [MoqAutoData]
         public async Task GetVacancyMetrics_HandlerReturnsData_ReturnsOkResponse(
