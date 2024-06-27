@@ -46,14 +46,14 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
         private string GetResourceIdentifier(string serviceName)
         {
             var config = _servicesConfiguration.Resources
-                .SingleOrDefault(fil => fil.ServiceName.Equals(serviceName, StringComparison.CurrentCultureIgnoreCase));
+                .FirstOrDefault(fil => fil.ServiceName.Equals(serviceName, StringComparison.CurrentCultureIgnoreCase));
 
             return config is not null ? config.ResourceIdentifier : string.Empty;
         }
 
         private string GetCounterName(string serviceName, string action)
         {
-            var config = _metricConfiguration.CustomMetrics.SingleOrDefault(fil =>
+            var config = _metricConfiguration.CustomMetrics.FirstOrDefault(fil =>
                 fil.ServiceName.Equals(serviceName, StringComparison.InvariantCultureIgnoreCase)
                 && fil.Action.Equals(action, StringComparison.InvariantCultureIgnoreCase));
 
