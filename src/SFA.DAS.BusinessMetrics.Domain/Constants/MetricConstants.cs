@@ -4,12 +4,12 @@
     {
         public const string CustomMetricsTableName = "customMetrics";
 
-        public class CustomDimensions
+        public static class CustomDimensions
         {
             public const string VacancyReference = "vacancy.reference";
         }
 
-        public class Vacancy
+        public static class Vacancy
         {
             public const string VacancyViews = "VacancyViews";
             public const string VacancyStarted = "VacancyStarted";
