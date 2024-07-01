@@ -8,12 +8,12 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
 {
     public class VacancyMetricServices(
         IOptions<MetricsConfiguration> metricsConfigurationOptions,
-        IOptions<ServicesConfiguration> servicesConfigurationOptions,
+        IOptions<LogAnalyticsWorkSpace> logWorkspaceConfigurationOptions,
         ILogsQueryClient queryClient)
         : IVacancyMetricServices
     {
         private readonly MetricsConfiguration _metricConfiguration = metricsConfigurationOptions.Value;
-        private readonly ServicesConfiguration _servicesConfiguration = servicesConfigurationOptions.Value;
+        private readonly LogAnalyticsWorkSpace _logAnalyticsWorkSpaceConfiguration = logWorkspaceConfigurationOptions.Value;
 
         public async Task<long> GetVacancyMetrics(
             string serviceName,
@@ -23,32 +23,52 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
             DateTime endDate,
             CancellationToken token)
         {
-            var resourceIdentifier = GetResourceIdentifier(serviceName);
             var counterName = GetCounterName(serviceName, action);
 
             var result = await queryClient.ProcessQuery(
-                new ResourceIdentifier(resourceIdentifier),
+                new ResourceIdentifier(_logAnalyticsWorkSpaceConfiguration.Identifier),
                 $"{Constants.MetricConstants.CustomMetricsTableName} " +
-                $"| where name == '{counterName}'" +
-                $"| where customDimensions.['{Constants.MetricConstants.CustomDimensions.VacancyReference}'] == '{vacancyReference}'" +
-                $"| summarize sum(value)",
+                $"| where Name == '{counterName}'" +
+                $"| where Properties.['{Constants.MetricConstants.CustomDimensions.VacancyReference}'] == '{vacancyReference}'" +
+                $"| summarize sum(ItemCount)",
                 new QueryTimeRange(startDate, endDate),
                 token);
 
             if (result is { Rows.Count: > 0 })
             {
-                return result.Rows.FirstOrDefault()!.GetInt64("sum_value") ?? 0;
+                return result.Rows.FirstOrDefault()!.GetInt64("sum_ItemCount") ?? 0;
             }
 
             return 0;
         }
 
-        private string GetResourceIdentifier(string serviceName)
+        public async Task<List<string?>> GetAllVacancies(DateTime startDate, DateTime endDate,
+            CancellationToken token)
         {
-            var config = _servicesConfiguration.Resources
-                .FirstOrDefault(fil => fil.ServiceName.Equals(serviceName, StringComparison.CurrentCultureIgnoreCase));
+            var filter = BuildQueryFilter();
 
-            return config is not null ? config.ResourceIdentifier : string.Empty;
+            var result = await queryClient.ProcessQuery(
+                new ResourceIdentifier(_logAnalyticsWorkSpaceConfiguration.Identifier),
+                $"{Constants.MetricConstants.CustomMetricsTableName} " +
+                $"| {filter} " +
+                $"| project Properties.['{Constants.MetricConstants.CustomDimensions.VacancyReference}']",
+                new QueryTimeRange(startDate, endDate),
+                token);
+
+            return result is not {Rows.Count: > 0} 
+                ? [] 
+                : result.Rows.Select(resultRow => Convert.ToString(resultRow.FirstOrDefault()))
+                    .Where(vacancyReference => !string.IsNullOrEmpty(vacancyReference))
+                    .ToList();
+        }
+
+        private string BuildQueryFilter()
+        {
+            var counterNames = _metricConfiguration.CustomMetrics.Select(fil => fil.CounterName).ToList();
+
+            return counterNames.Aggregate("where ", (current, counterName) => current + (counterNames.IndexOf(counterName) == counterNames.Count - 1
+                ? $"Name == '{counterName}' "
+                : $"Name == '{counterName}' or "));
         }
 
         private string GetCounterName(string serviceName, string action)

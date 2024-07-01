@@ -24,16 +24,16 @@ namespace SFA.DAS.BusinessMetrics.Domain.UnitTests.ServicesTests
             long viewsCount,
             string serviceName,
             string actionName,
-            ServicesConfiguration servicesConfiguration,
+            LogAnalyticsWorkSpace logAnalyticsWorkSpace,
             MetricsConfiguration metricsConfiguration,
             [Frozen] Mock<ILogsQueryClient> mockLogsQueryClient,
             [Frozen] Mock<ILogger<VacancyMetricServices>> mockLogger,
-            [Frozen] Mock<IOptions<ServicesConfiguration>> mockServicesConfigurationOptions,
+            [Frozen] Mock<IOptions<LogAnalyticsWorkSpace>> mockLogAnalyticsWorkspace,
             [Frozen] Mock<IOptions<MetricsConfiguration>> mockMetricsConfigurationOptions)
         {
             var logsTableColumns = new LogsTableColumn[]
             {
-                MonitorQueryModelFactory.LogsTableColumn("sum_value", LogsColumnType.String)
+                MonitorQueryModelFactory.LogsTableColumn("sum_ItemCount", LogsColumnType.String)
             };
             var rowArray = new LogsTableRow[]
             {
@@ -41,21 +41,21 @@ namespace SFA.DAS.BusinessMetrics.Domain.UnitTests.ServicesTests
             };
             var logsTable = MonitorQueryModelFactory.LogsTable("tester", logsTableColumns.AsEnumerable(), rowArray.AsEnumerable());
 
-            servicesConfiguration.Resources.ForEach(r => r.ServiceName = serviceName);
+            metricsConfiguration.CustomMetrics.ForEach(r => r.ServiceName = serviceName);
             foreach (var customMetric in metricsConfiguration.CustomMetrics)
             {
                 customMetric.ServiceName = serviceName;
                 customMetric.Action = actionName;
             }
 
-            mockServicesConfigurationOptions.Setup(ap => ap.Value).Returns(servicesConfiguration);
+            mockLogAnalyticsWorkspace.Setup(ap => ap.Value).Returns(logAnalyticsWorkSpace);
             mockMetricsConfigurationOptions.Setup(ap => ap.Value).Returns(metricsConfiguration);
 
             mockLogsQueryClient.Setup(x => x.ProcessQuery(It.IsAny<ResourceIdentifier>(), It.IsAny<string>(),
                     It.IsAny<QueryTimeRange>(), CancellationToken.None))
                 .ReturnsAsync(logsTable);
 
-            var sut = new VacancyMetricServices(mockMetricsConfigurationOptions.Object, mockServicesConfigurationOptions.Object, mockLogsQueryClient.Object);
+            var sut = new VacancyMetricServices(mockMetricsConfigurationOptions.Object, mockLogAnalyticsWorkspace.Object, mockLogsQueryClient.Object);
 
             var actual = await sut.GetVacancyMetrics(serviceName, actionName, vacancyReference, startDate, endDate, CancellationToken.None);
 
@@ -67,18 +67,19 @@ namespace SFA.DAS.BusinessMetrics.Domain.UnitTests.ServicesTests
             string vacancyReference,
             DateTime startDate,
             DateTime endDate,
+            long viewsCount,
             string serviceName,
             string actionName,
-            ServicesConfiguration servicesConfiguration,
+            LogAnalyticsWorkSpace logAnalyticsWorkSpace,
             MetricsConfiguration metricsConfiguration,
             [Frozen] Mock<ILogsQueryClient> mockLogsQueryClient,
             [Frozen] Mock<ILogger<VacancyMetricServices>> mockLogger,
-            [Frozen] Mock<IOptions<ServicesConfiguration>> mockServicesConfigurationOptions,
+            [Frozen] Mock<IOptions<LogAnalyticsWorkSpace>> mockLogAnalyticsWorkspace,
             [Frozen] Mock<IOptions<MetricsConfiguration>> mockMetricsConfigurationOptions)
         {
             var logsTableColumns = new LogsTableColumn[]
             {
-                MonitorQueryModelFactory.LogsTableColumn("sum_value", LogsColumnType.String)
+                MonitorQueryModelFactory.LogsTableColumn("sum_ItemCount", LogsColumnType.String)
             };
             var rowArray = new LogsTableRow[]
             {
@@ -90,20 +91,63 @@ namespace SFA.DAS.BusinessMetrics.Domain.UnitTests.ServicesTests
                     It.IsAny<QueryTimeRange>(), CancellationToken.None))
                 .ReturnsAsync(logsTable);
 
-            servicesConfiguration.Resources.ForEach(r => r.ServiceName = serviceName);
+            metricsConfiguration.CustomMetrics.ForEach(r => r.ServiceName = serviceName);
             foreach (var customMetric in metricsConfiguration.CustomMetrics)
             {
                 customMetric.ServiceName = serviceName;
                 customMetric.Action = actionName;
             }
-            mockServicesConfigurationOptions.Setup(ap => ap.Value).Returns(servicesConfiguration);
             mockMetricsConfigurationOptions.Setup(ap => ap.Value).Returns(metricsConfiguration);
+            mockLogAnalyticsWorkspace.Setup(ap => ap.Value).Returns(logAnalyticsWorkSpace);
 
-            var sut = new VacancyMetricServices(mockMetricsConfigurationOptions.Object, mockServicesConfigurationOptions.Object, mockLogsQueryClient.Object);
+            var sut = new VacancyMetricServices(mockMetricsConfigurationOptions.Object, mockLogAnalyticsWorkspace.Object, mockLogsQueryClient.Object);
 
             var actual = await sut.GetVacancyMetrics(serviceName, actionName, vacancyReference, startDate, endDate, CancellationToken.None);
             
             actual.Should().Be(0);
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetAllVacancies_Returns_Expected(
+           DateTime startDate,
+           DateTime endDate,
+           List<string> vacancyReferences,
+           string serviceName,
+           string actionName,
+           LogAnalyticsWorkSpace logAnalyticsWorkSpace,
+           MetricsConfiguration metricsConfiguration,
+           [Frozen] Mock<ILogsQueryClient> mockLogsQueryClient,
+           [Frozen] Mock<ILogger<VacancyMetricServices>> mockLogger,
+           [Frozen] Mock<IOptions<LogAnalyticsWorkSpace>> mockLogAnalyticsWorkspace,
+           [Frozen] Mock<IOptions<MetricsConfiguration>> mockMetricsConfigurationOptions)
+        {
+            var logsTableColumns = new LogsTableColumn[]
+            {
+                MonitorQueryModelFactory.LogsTableColumn("sum_ItemCount", LogsColumnType.String)
+            };
+            var logsTableRows = vacancyReferences.Select(vacancyReference => MonitorQueryModelFactory.LogsTableRow(logsTableColumns, [vacancyReference])).ToList();
+
+            var logsTable = MonitorQueryModelFactory.LogsTable("tester", logsTableColumns.AsEnumerable(), logsTableRows.AsEnumerable());
+
+            metricsConfiguration.CustomMetrics.ForEach(r => r.ServiceName = serviceName);
+            foreach (var customMetric in metricsConfiguration.CustomMetrics)
+            {
+                customMetric.ServiceName = serviceName;
+                customMetric.Action = actionName;
+            }
+
+            mockLogAnalyticsWorkspace.Setup(ap => ap.Value).Returns(logAnalyticsWorkSpace);
+            mockMetricsConfigurationOptions.Setup(ap => ap.Value).Returns(metricsConfiguration);
+
+            mockLogsQueryClient.Setup(x => x.ProcessQuery(It.IsAny<ResourceIdentifier>(), It.IsAny<string>(),
+                    It.IsAny<QueryTimeRange>(), CancellationToken.None))
+                .ReturnsAsync(logsTable);
+
+            var sut = new VacancyMetricServices(mockMetricsConfigurationOptions.Object, mockLogAnalyticsWorkspace.Object, mockLogsQueryClient.Object);
+
+            var actual = await sut.GetAllVacancies(startDate, endDate, CancellationToken.None);
+
+            actual.Should().BeEquivalentTo(vacancyReferences);
         }
     }
 }

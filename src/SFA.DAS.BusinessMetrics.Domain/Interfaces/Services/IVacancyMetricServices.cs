@@ -9,5 +9,9 @@
             DateTime startDate,
             DateTime endDate,
             CancellationToken token);
+
+        Task<List<string?>> GetAllVacancies(DateTime startDate,
+            DateTime endDate,
+            CancellationToken token);
     }
 }

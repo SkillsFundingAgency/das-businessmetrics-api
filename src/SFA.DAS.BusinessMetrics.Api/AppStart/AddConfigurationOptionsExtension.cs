@@ -9,7 +9,7 @@ namespace SFA.DAS.BusinessMetrics.Api.AppStart
             IConfiguration configuration)
         {
             services.Configure<MetricsConfiguration>(configuration.GetSection(nameof(MetricsConfiguration)));
-            services.Configure<ServicesConfiguration>(configuration.GetSection(nameof(ServicesConfiguration)));
+            services.Configure<LogAnalyticsWorkSpace>(configuration.GetSection(nameof(LogAnalyticsWorkSpace)));
         }
     }
 }

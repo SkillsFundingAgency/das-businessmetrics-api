@@ -4,13 +4,13 @@ using SFA.DAS.BusinessMetrics.Domain.Interfaces.Services;
 
 namespace SFA.DAS.BusinessMetrics.Domain.Services
 {
-    public class MetricServices(IOptions<ServicesConfiguration> servicesConfigurationOptions) : IMetricServices
+    public class MetricServices(IOptions<MetricsConfiguration> metricsConfigurationOptions) : IMetricServices
     {
-        private readonly ServicesConfiguration _servicesConfiguration = servicesConfigurationOptions.Value;
+        private readonly MetricsConfiguration _metricsConfiguration = metricsConfigurationOptions.Value;
 
         public List<string> GetMetricServiceNames()
         {
-            return _servicesConfiguration.Resources.Select(fil => fil.ServiceName).ToList();
+            return _metricsConfiguration.CustomMetrics.Select(fil => fil.ServiceName).Distinct().ToList();
         }
     }
 }

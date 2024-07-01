@@ -2,7 +2,7 @@
 {
     public static class MetricConstants
     {
-        public const string CustomMetricsTableName = "customMetrics";
+        public const string CustomMetricsTableName = "AppMetrics";
 
         public static class CustomDimensions
         {

@@ -14,18 +14,18 @@ namespace SFA.DAS.BusinessMetrics.Domain.UnitTests.ServicesTests
     {
         [Test, MoqAutoData]
         public void GetMetricServiceNames_Returns_ServiceNames(
-            ServicesConfiguration servicesConfiguration,
+            MetricsConfiguration metricsConfiguration,
             [Frozen] Mock<ILogsQueryClient> mockLogsQueryClient,
             [Frozen] Mock<ILogger<VacancyMetricServices>> mockLogger,
-            [Frozen] Mock<IOptions<ServicesConfiguration>> mockOptions)
+            [Frozen] Mock<IOptions<MetricsConfiguration>> mockOptions)
         {
-            mockOptions.Setup(ap => ap.Value).Returns(servicesConfiguration);
+            mockOptions.Setup(ap => ap.Value).Returns(metricsConfiguration);
             var sut = new MetricServices(mockOptions.Object);
 
             var actual = sut.GetMetricServiceNames();
 
             actual.Should().NotBeNull();
-            actual.Count.Should().Be(servicesConfiguration.Resources.Count);
+            actual.Count.Should().Be(metricsConfiguration.CustomMetrics.Count);
         }
     }
 }
