@@ -36,7 +36,7 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
 
             if (result is { Rows.Count: > 0 })
             {
-                return result.Rows.FirstOrDefault()!.GetInt64("sum_ItemCount") ?? 0;
+                return result.Rows[0].GetInt64("sum_ItemCount") ?? 0;
             }
 
             return 0;
@@ -57,7 +57,7 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
 
             return result is not {Rows.Count: > 0} 
                 ? [] 
-                : result.Rows.Select(resultRow => Convert.ToString(resultRow.FirstOrDefault()))
+                : result.Rows.Select(resultRow => Convert.ToString(resultRow[0]))
                     .Where(vacancyReference => !string.IsNullOrEmpty(vacancyReference))
                     .ToList();
         }
@@ -73,7 +73,7 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
 
         private string GetCounterName(string serviceName, string action)
         {
-            var config = _metricConfiguration.CustomMetrics.FirstOrDefault(fil =>
+            var config = _metricConfiguration.CustomMetrics.Find(fil =>
                 fil.ServiceName.Equals(serviceName, StringComparison.InvariantCultureIgnoreCase)
                 && fil.Action.Equals(action, StringComparison.InvariantCultureIgnoreCase));
 
