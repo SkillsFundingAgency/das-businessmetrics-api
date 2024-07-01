@@ -7,24 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.1.1" />
-	  <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.2.0" />
-	  <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.6.0" />
-	  <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.8.1" />
-	  <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.8.1" />
-	  <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.8.1" />
+	  <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.2.0" />
+	  <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.3.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+	  <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
+	  <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
+	  <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
 	  <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
-	  <PackageReference Include="Azure.Identity" Version="1.11.4" />
+	  <PackageReference Include="Azure.Identity" Version="1.12.0" />
 	  <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
-	  <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.5" />
+	  <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.6" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
 	  <PackageReference Include="SFA.DAS.Api.Common" Version="17.1.88" />
 	  <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
 	  <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.6.2" />
-	  <PackageReference Include="System.Drawing.Common" Version="8.0.5" />
-	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.0" />
+	  <PackageReference Include="System.Drawing.Common" Version="8.0.6" />
+	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.2" />
 	  <PackageReference Include="System.Net.Http" Version="4.3.4" />
 	  <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
@@ -33,5 +33,12 @@
     <ProjectReference Include="..\SFA.DAS.BusinessMetrics.Application\SFA.DAS.BusinessMetrics.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.BusinessMetrics.Domain\SFA.DAS.BusinessMetrics.Domain.csproj" />
   </ItemGroup>
-
+	<ItemGroup>
+		<Content Update="appsettings.Development.json">
+			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
+		</Content>
+		<Content Update="appsettings.json">
+			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
 </Project>
