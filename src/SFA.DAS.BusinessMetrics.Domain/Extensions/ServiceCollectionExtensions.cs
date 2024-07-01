@@ -11,7 +11,8 @@ namespace SFA.DAS.BusinessMetrics.Domain.Extensions
         public static IServiceCollection RegisterServices(this IServiceCollection services)
         {
             services.AddTransient<ILogsQueryClient, AzureMonitorLogsQueryClient>();
-            services.AddTransient<IMetricServices, VacancyMetricServices>();
+            services.AddTransient<IMetricServices, MetricServices>();
+            services.AddTransient<IVacancyMetricServices, VacancyMetricServices>();
 
             return services;
         }
