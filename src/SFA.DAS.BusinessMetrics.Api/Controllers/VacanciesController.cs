@@ -8,7 +8,9 @@ namespace SFA.DAS.BusinessMetrics.Api.Controllers
 {
     [ApiController]
     [Route("api/vacancies")]
-    public class VacancyController(ILogger<VacancyController> logger, IMediator mediator) : ActionResponseControllerBase
+    public class VacanciesController(
+        ILogger<VacanciesController> logger,
+        IMediator mediator) : ActionResponseControllerBase
     {
         [HttpGet]
         [Route("{serviceName}/metrics/{vacancyReference}")]

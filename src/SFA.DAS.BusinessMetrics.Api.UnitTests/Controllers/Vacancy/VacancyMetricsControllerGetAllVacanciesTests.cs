@@ -18,7 +18,7 @@ namespace SFA.DAS.BusinessMetrics.Api.UnitTests.Controllers.Vacancy
             DateTime startDate,
             DateTime endDate,
             [Frozen] Mock<IMediator> mediatorMock,
-            [Greedy] VacancyController sut,
+            [Greedy] VacanciesController sut,
             GetVacancyMetricsQueryResult getMetricNamesQueryResult)
         {
             await sut.GetAll(startDate, endDate);
@@ -31,7 +31,7 @@ namespace SFA.DAS.BusinessMetrics.Api.UnitTests.Controllers.Vacancy
             DateTime startDate,
             DateTime endDate,
             [Frozen] Mock<IMediator> mediatorMock,
-            [Greedy] VacancyController sut,
+            [Greedy] VacanciesController sut,
             GetAllVacanciesQueryResult getAllVacanciesQueryResult)
         {
             var response = new ValidatedResponse<GetAllVacanciesQueryResult>(getAllVacanciesQueryResult);
