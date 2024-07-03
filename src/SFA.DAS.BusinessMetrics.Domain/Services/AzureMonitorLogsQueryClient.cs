@@ -14,7 +14,7 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
             QueryTimeRange timeRange,
             CancellationToken token)
         {
-            var logsClient = new LogsQueryClient(new AzureCliCredential());
+            var logsClient = new LogsQueryClient(new DefaultAzureCredential());
 
             var logsResults = await logsClient.QueryResourceAsync(
                 resourceIdentifier,
