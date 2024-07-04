@@ -59,6 +59,7 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
                 ? [] 
                 : result.Rows.Select(resultRow => Convert.ToString(resultRow[0]))
                     .Where(vacancyReference => !string.IsNullOrEmpty(vacancyReference))
+                    .Distinct()
                     .ToList();
         }
 
