@@ -2,6 +2,9 @@
 {
     public record GetVacancyMetricsQueryResult
     {
-        public long VacancyViews { get; init; }
+        public long ViewsCount { get; init; }
+        public long SearchResultsCount { get; init; }
+        public long ApplicationStartedCount { get; init; }
+        public long ApplicationSubmittedCount { get; init; }
     }
 }

@@ -1,10 +1,9 @@
-﻿using SFA.DAS.BusinessMetrics.Domain.Interfaces.Configuration;
-using SFA.DAS.BusinessMetrics.Domain.Models;
+﻿using SFA.DAS.BusinessMetrics.Domain.Models;
 
 namespace SFA.DAS.BusinessMetrics.Domain.Configuration
 {
-    public class MetricsConfiguration : IMetricsConfiguration
+    public class MetricsConfiguration
     {
-        public List<VacancyViewsConfig> VacancyViewsConfig { get; set; } = [];
+        public List<MetricsCounterConfig> CustomMetrics { get; set; } = [];
     }
 }

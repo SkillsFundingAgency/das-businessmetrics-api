@@ -23,12 +23,12 @@ namespace SFA.DAS.BusinessMetrics.Api
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
-            _environmentName = configuration["EnvironmentName"];
+            _environmentName = configuration["EnvironmentName"]!;
             var config = new ConfigurationBuilder()
                 .AddConfiguration(configuration)
                 .AddAzureTableStorage(options =>
                 {
-                    options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
+                    options.ConfigurationKeys = configuration["ConfigNames"]!.Split(",");
                     options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
                     options.EnvironmentName = _environmentName;
                     options.PreFixConfigurationKeys = false;
@@ -60,7 +60,7 @@ namespace SFA.DAS.BusinessMetrics.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddOpenTelemetryRegistration(Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
+            services.AddOpenTelemetryRegistration(Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
             services.AddApiVersioning(opt =>
             {

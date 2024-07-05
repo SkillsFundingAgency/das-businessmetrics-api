@@ -1,51 +1,84 @@
 ﻿using Azure.Core;
 using Azure.Monitor.Query;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SFA.DAS.BusinessMetrics.Domain.Configuration;
 using SFA.DAS.BusinessMetrics.Domain.Interfaces.Services;
-using ConfigurationErrorsException = System.Configuration.ConfigurationErrorsException;
 
 namespace SFA.DAS.BusinessMetrics.Domain.Services
 {
     public class VacancyMetricServices(
-        ILogger<VacancyMetricServices> logger,
-        IOptions<MetricsConfiguration> metricConfigurationOptions, ILogsQueryClient queryClient)
-        : IMetricServices
+        IOptions<MetricsConfiguration> metricsConfigurationOptions,
+        IOptions<LogAnalyticsWorkSpace> logWorkspaceConfigurationOptions,
+        ILogsQueryClient queryClient)
+        : IVacancyMetricServices
     {
-        private readonly MetricsConfiguration _metricConfiguration = metricConfigurationOptions.Value;
+        private readonly MetricsConfiguration _metricConfiguration = metricsConfigurationOptions.Value;
+        private readonly LogAnalyticsWorkSpace _logAnalyticsWorkSpaceConfiguration = logWorkspaceConfigurationOptions.Value;
 
-        public List<string> GetMetricServiceNames()
+        public async Task<long> GetVacancyMetrics(
+            string serviceName,
+            string action,
+            string vacancyReference,
+            DateTime startDate,
+            DateTime endDate,
+            CancellationToken token)
         {
-            return _metricConfiguration.VacancyViewsConfig.Select(fil => fil.ServiceName).ToList();
-        }
-
-        public async Task<long> GetVacancyViews(string serviceName, string vacancyReference, DateTime startDate, DateTime endDate, CancellationToken token)
-        {
-            var config = _metricConfiguration.VacancyViewsConfig
-                .SingleOrDefault(fil => fil.ServiceName.Equals(serviceName, StringComparison.CurrentCultureIgnoreCase));
-
-            if (config is null)
-            {
-                logger.LogError("Configuration could not be found for service name: {serviceName}", serviceName);
-                throw new ConfigurationErrorsException($"Configuration could not be found for service name: {serviceName}");
-            }
+            var counterName = GetCounterName(serviceName, action);
 
             var result = await queryClient.ProcessQuery(
-                new ResourceIdentifier(config.ResourceIdentifier),
+                new ResourceIdentifier(_logAnalyticsWorkSpaceConfiguration.Identifier),
                 $"{Constants.MetricConstants.CustomMetricsTableName} " +
-                $"| where name == '{config.CounterName}'" +
-                $"| where customDimensions.['{Constants.MetricConstants.CustomDimensions.VacancyReference}'] == '{vacancyReference}'" +
-                $"| summarize sum(value)",
+                $"| where Name == '{counterName}'" +
+                $"| where Properties.['{Constants.MetricConstants.CustomDimensions.VacancyReference}'] == '{vacancyReference}'" +
+                $"| summarize sum(ItemCount)",
                 new QueryTimeRange(startDate, endDate),
                 token);
 
             if (result is { Rows.Count: > 0 })
             {
-                return result.Rows.FirstOrDefault()!.GetInt64("sum_value") ?? 0;
+                return result.Rows[0].GetInt64("sum_ItemCount") ?? 0;
             }
 
             return 0;
+        }
+
+        public async Task<List<string?>> GetAllVacancies(DateTime startDate, DateTime endDate,
+            CancellationToken token)
+        {
+            var filter = BuildQueryFilter();
+
+            var result = await queryClient.ProcessQuery(
+                new ResourceIdentifier(_logAnalyticsWorkSpaceConfiguration.Identifier),
+                $"{Constants.MetricConstants.CustomMetricsTableName} " +
+                $"| {filter} " +
+                $"| project Properties.['{Constants.MetricConstants.CustomDimensions.VacancyReference}']",
+                new QueryTimeRange(startDate, endDate),
+                token);
+
+            return result is not {Rows.Count: > 0} 
+                ? [] 
+                : result.Rows.Select(resultRow => Convert.ToString(resultRow[0]))
+                    .Where(vacancyReference => !string.IsNullOrEmpty(vacancyReference))
+                    .Distinct()
+                    .ToList();
+        }
+
+        private string BuildQueryFilter()
+        {
+            var counterNames = _metricConfiguration.CustomMetrics.Select(fil => fil.CounterName).ToList();
+
+            return counterNames.Aggregate("where ", (current, counterName) => current + (counterNames.IndexOf(counterName) == counterNames.Count - 1
+                ? $"Name == '{counterName}' "
+                : $"Name == '{counterName}' or "));
+        }
+
+        private string GetCounterName(string serviceName, string action)
+        {
+            var config = _metricConfiguration.CustomMetrics.Find(fil =>
+                fil.ServiceName.Equals(serviceName, StringComparison.InvariantCultureIgnoreCase)
+                && fil.Action.Equals(action, StringComparison.InvariantCultureIgnoreCase));
+
+            return config is not null ? config.CounterName : string.Empty;
         }
     }
 }

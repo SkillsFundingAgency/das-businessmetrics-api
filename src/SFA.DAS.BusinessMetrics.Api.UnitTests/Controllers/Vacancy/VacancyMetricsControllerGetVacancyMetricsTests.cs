@@ -12,6 +12,21 @@ namespace SFA.DAS.BusinessMetrics.Api.UnitTests.Controllers.Vacancy
 {
     public class VacancyMetricsControllerGetVacancyMetricsTests
     {
+
+        [Test, MoqAutoData]
+        public async Task GetVacancyMetrics_InvokesQueryHandler(
+            string serviceName,
+            string vacancyReference,
+            DateTime startDate,
+            DateTime endDate,
+            [Frozen] Mock<IMediator> mediatorMock,
+            [Greedy] VacanciesController sut,
+            GetVacancyMetricsQueryResult getMetricNamesQueryResult)
+        {
+            await sut.GetVacancyMetrics(serviceName, vacancyReference, startDate, endDate);
+            mediatorMock.Verify(m => m.Send(It.IsAny<GetVacancyMetricsQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
         [Test]
         [MoqAutoData]
         public async Task GetVacancyMetrics_HandlerReturnsData_ReturnsOkResponse(
@@ -20,7 +35,7 @@ namespace SFA.DAS.BusinessMetrics.Api.UnitTests.Controllers.Vacancy
             DateTime startDate,
             DateTime endDate,
             [Frozen] Mock<IMediator> mediatorMock,
-            [Greedy] VacancyMetricsController sut,
+            [Greedy] VacanciesController sut,
             GetVacancyMetricsQueryResult getMetricNamesQueryResult)
         {
             var response = new ValidatedResponse<GetVacancyMetricsQueryResult>(getMetricNamesQueryResult);
