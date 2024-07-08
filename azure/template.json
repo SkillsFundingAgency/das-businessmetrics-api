@@ -57,6 +57,9 @@
       "logAnalyticsWorkspaceName": {
          "type": "string"
       },
+      "logAnalyticsResourceGroup": {
+         "type": "string"
+      },      
       "utcValue": {
          "type": "string",
          "defaultValue": "[utcNow()]"
@@ -121,7 +124,7 @@
                   "value": "[variables('appServiceName')]"
                },
                "logAnalyticsWorkspaceId": {
-                  "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
+                  "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('logAnalyticsResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
                }
             }
          },
@@ -131,9 +134,9 @@
       },
       {
          "apiVersion": "2020-06-01",
-         "name": "[concat('role-assignments-pas', copyIndex(), '-', parameters('utcValue'))]",
+         "name": "[concat('role-assignments-busmet', copyIndex(), '-', parameters('utcValue'))]",
          "type": "Microsoft.Resources/deployments",
-         "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+         "resourceGroup": "[parameters('logAnalyticsResourceGroup')]",
          "properties": {
             "mode": "Incremental",
             "templateLink": {
