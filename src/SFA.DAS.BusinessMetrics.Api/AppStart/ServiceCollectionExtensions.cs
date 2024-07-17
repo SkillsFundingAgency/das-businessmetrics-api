@@ -5,15 +5,17 @@ namespace SFA.DAS.BusinessMetrics.Api.AppStart
 {
     public static class ServiceCollectionExtensions
     {
+        private static readonly string[] Tags = ["Ready"];
+
         public static IServiceCollection AddServiceHealthChecks(this IServiceCollection services)
         {
             services.AddHealthChecks()
                 .AddCheck<BusinessMetricsHealthCheck>(BusinessMetricsHealthCheck.HealthCheckResultDescription,
                     failureStatus: HealthStatus.Unhealthy,
-                    tags: new[] { "Ready" })
+                    tags: Tags)
                 .AddCheck<LogAnalyticsWorkspaceHealthCheck>(LogAnalyticsWorkspaceHealthCheck.HealthCheckResultDescription,
                     failureStatus: HealthStatus.Degraded,
-                    tags: new[] { "Ready" });
+                    tags: Tags);
 
             return services;
         }
