@@ -10,6 +10,9 @@ namespace SFA.DAS.BusinessMetrics.Api.AppStart
             services.AddHealthChecks()
                 .AddCheck<BusinessMetricsHealthCheck>(BusinessMetricsHealthCheck.HealthCheckResultDescription,
                     failureStatus: HealthStatus.Unhealthy,
+                    tags: new[] { "Ready" })
+                .AddCheck<LogAnalyticsWorkspaceHealthCheck>(LogAnalyticsWorkspaceHealthCheck.HealthCheckResultDescription,
+                    failureStatus: HealthStatus.Degraded,
                     tags: new[] { "Ready" });
 
             return services;
