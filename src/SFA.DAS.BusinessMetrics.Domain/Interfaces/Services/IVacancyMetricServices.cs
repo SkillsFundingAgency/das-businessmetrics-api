@@ -1,16 +1,12 @@
-﻿namespace SFA.DAS.BusinessMetrics.Domain.Interfaces.Services
+﻿using SFA.DAS.BusinessMetrics.Domain.Models;
+
+namespace SFA.DAS.BusinessMetrics.Domain.Interfaces.Services
 {
     public interface IVacancyMetricServices
     {
-        Task<long> GetVacancyMetrics(
+        Task<List<VacancyMetrics>> GetVacancyMetrics(
             string serviceName,
-            string action,
-            string vacancyReference,
             DateTime startDate,
-            DateTime endDate,
-            CancellationToken token);
-
-        Task<List<string?>> GetAllVacancies(DateTime startDate,
             DateTime endDate,
             CancellationToken token);
     }
