@@ -12,18 +12,17 @@ namespace SFA.DAS.BusinessMetrics.Api.Controllers
         IMediator mediator) : ActionResponseControllerBase
     {
         [HttpGet]
-        [Route("{serviceName}/metrics")]
+        [Route("metrics")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(GetVacancyMetricsQueryResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetVacancyMetrics(
-            [FromRoute] string serviceName,
             [FromQuery] DateTime startDate,
             [FromQuery] DateTime endDate)
         {
             logger.LogInformation("Business Metrics API: Received query to get metrics for vacancies");
 
-            var response = await mediator.Send(new GetVacancyMetricsQuery(serviceName, startDate, endDate));
+            var response = await mediator.Send(new GetVacancyMetricsQuery(startDate, endDate));
 
             return GetResponse(response);
         }

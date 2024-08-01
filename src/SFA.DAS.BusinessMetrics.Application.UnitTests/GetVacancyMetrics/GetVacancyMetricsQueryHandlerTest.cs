@@ -17,7 +17,7 @@ namespace SFA.DAS.BusinessMetrics.Application.UnitTests.GetVacancyMetrics
             GetVacancyMetricsQuery request,
             List<VacancyMetrics> result)
         {
-            metricServices.Setup(a => a.GetVacancyMetrics(request.ServiceName, request.StartDate, request.EndDate, CancellationToken.None)).ReturnsAsync(result);
+            metricServices.Setup(a => a.GetVacancyMetrics(request.StartDate, request.EndDate, CancellationToken.None)).ReturnsAsync(result);
 
             var response = await sut.Handle(request, new CancellationToken());
 

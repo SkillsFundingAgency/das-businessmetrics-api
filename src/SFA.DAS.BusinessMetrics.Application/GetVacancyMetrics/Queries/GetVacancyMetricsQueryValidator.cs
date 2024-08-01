@@ -6,11 +6,6 @@ namespace SFA.DAS.BusinessMetrics.Application.GetVacancyMetrics.Queries
     {
         public GetVacancyMetricsQueryValidator()
         {
-            RuleFor(exp => exp.ServiceName)
-                .NotEmpty()
-                .NotNull()
-                .WithMessage("Service name could not be null or empty");
-
             RuleFor(exp => exp.StartDate)
                 .NotEmpty()
                 .NotNull()

@@ -9,7 +9,7 @@ namespace SFA.DAS.BusinessMetrics.Application.GetVacancyMetrics.Queries
     {
         public async Task<ValidatedResponse<GetVacancyMetricsQueryResult>> Handle(GetVacancyMetricsQuery request, CancellationToken cancellationToken)
         {
-            var metricsResult = await MetricServices.GetVacancyMetrics(request.ServiceName, request.StartDate, request.EndDate, cancellationToken);
+            var metricsResult = await MetricServices.GetVacancyMetrics(request.StartDate, request.EndDate, cancellationToken);
             
             var vacancyMetrics = metricsResult.GroupBy(x => x.VacancyReference)
                 .Select(metrics => new GetVacancyMetricsQueryResult.VacancyMetric

@@ -17,17 +17,14 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
         private readonly LogAnalyticsWorkSpace _logAnalyticsWorkSpaceConfiguration = logWorkspaceConfigurationOptions.Value;
 
         public async Task<List<VacancyMetrics>> GetVacancyMetrics(
-            string serviceName,
             DateTime startDate,
             DateTime endDate,
             CancellationToken token)
         {
-            var counterName = GetCounterName(serviceName);
-
             var result = await queryClient.ProcessQuery(
                 new ResourceIdentifier(_logAnalyticsWorkSpaceConfiguration.Identifier),
                 $"{Constants.MetricConstants.CustomMetricsTableName} " +
-                $"| where Name contains '{counterName}'" +
+                $"| where Name contains '{Constants.MetricConstants.CustomDimensions.VacancyDimensionName}'" +
                 $"| extend CustomDimension = tostring(Properties.['{Constants.MetricConstants.CustomDimensions.VacancyReference}'])" +
                 $"| summarize Count = count() by CustomDimension, Name" +
                 $"| order by CustomDimension",
@@ -42,14 +39,6 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
                     Name = Convert.ToString(row[1]),
                     Count = Convert.ToInt64(row[2]),
                 }).ToList();
-        }
-        
-        private string GetCounterName(string serviceName)
-        {
-            var config = _metricConfiguration.CustomMetrics.Find(fil =>
-                fil.ServiceName.Equals(serviceName, StringComparison.InvariantCultureIgnoreCase));
-
-            return config is not null ? config.CounterName : string.Empty;
         }
     }
 }

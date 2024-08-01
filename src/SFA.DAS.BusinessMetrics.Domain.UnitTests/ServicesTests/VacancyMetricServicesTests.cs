@@ -21,7 +21,6 @@ namespace SFA.DAS.BusinessMetrics.Domain.UnitTests.ServicesTests
         public async Task GetVacancyMetrics_Returns_Count_When_Config_Found(
             DateTime startDate,
             DateTime endDate,
-            string serviceName,
             List<VacancyMetrics> vacancyMetrics,
             LogAnalyticsWorkSpace logAnalyticsWorkSpace,
             MetricsConfiguration metricsConfiguration,
@@ -40,12 +39,6 @@ namespace SFA.DAS.BusinessMetrics.Domain.UnitTests.ServicesTests
             var logsTableRows = vacancyMetrics.Select(vacancyMetric => MonitorQueryModelFactory.LogsTableRow(logsTableColumns, [vacancyMetric.VacancyReference, vacancyMetric.Name, vacancyMetric.Count])).ToList();
             var logsTable = MonitorQueryModelFactory.LogsTable("tester", logsTableColumns.AsEnumerable(), logsTableRows.AsEnumerable());
 
-            metricsConfiguration.CustomMetrics.ForEach(r => r.ServiceName = serviceName);
-            foreach (var customMetric in metricsConfiguration.CustomMetrics)
-            {
-                customMetric.ServiceName = serviceName;
-            }
-
             mockLogAnalyticsWorkspace.Setup(ap => ap.Value).Returns(logAnalyticsWorkSpace);
             mockMetricsConfigurationOptions.Setup(ap => ap.Value).Returns(metricsConfiguration);
 
@@ -55,7 +48,7 @@ namespace SFA.DAS.BusinessMetrics.Domain.UnitTests.ServicesTests
 
             var sut = new VacancyMetricServices(mockMetricsConfigurationOptions.Object, mockLogAnalyticsWorkspace.Object, mockLogsQueryClient.Object);
 
-            var actual = await sut.GetVacancyMetrics(serviceName, startDate, endDate, CancellationToken.None);
+            var actual = await sut.GetVacancyMetrics(startDate, endDate, CancellationToken.None);
 
             actual.Count.Should().Be(vacancyMetrics.Count);
             actual.Should().BeEquivalentTo(vacancyMetrics);

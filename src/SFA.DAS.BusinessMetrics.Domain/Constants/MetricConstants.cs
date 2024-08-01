@@ -7,6 +7,7 @@
         public static class CustomDimensions
         {
             public const string VacancyReference = "vacancy.reference";
+            public const string VacancyDimensionName = "vacancyReference";
         }
 
         public static class Vacancy
