@@ -13,6 +13,7 @@ namespace SFA.DAS.BusinessMetrics.Domain.Extensions
             services.AddTransient<ILogsQueryClient, AzureMonitorLogsQueryClient>();
             services.AddTransient<IMetricServices, MetricServices>();
             services.AddTransient<IVacancyMetricServices, VacancyMetricServices>();
+            services.AddTransient<IHealthCheckServices, HealthCheckServices>();
 
             return services;
         }
