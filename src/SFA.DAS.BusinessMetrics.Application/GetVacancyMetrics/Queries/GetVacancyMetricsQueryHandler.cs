@@ -9,19 +9,42 @@ namespace SFA.DAS.BusinessMetrics.Application.GetVacancyMetrics.Queries
     {
         public async Task<ValidatedResponse<GetVacancyMetricsQueryResult>> Handle(GetVacancyMetricsQuery request, CancellationToken cancellationToken)
         {
-            var viewMetricsTask = MetricServices.GetVacancyMetrics(request.ServiceName, MetricConstants.Vacancy.VacancyViews, request.VacancyReference, request.StartDate, request.EndDate, cancellationToken);
-            var startedMetricsTask = MetricServices.GetVacancyMetrics(request.ServiceName, MetricConstants.Vacancy.VacancyStarted, request.VacancyReference, request.StartDate, request.EndDate, cancellationToken);
-            var submittedMetricsTask = MetricServices.GetVacancyMetrics(request.ServiceName, MetricConstants.Vacancy.VacancySubmitted, request.VacancyReference, request.StartDate, request.EndDate, cancellationToken);
-            var searchResultsMetricsTask = MetricServices.GetVacancyMetrics(request.ServiceName, MetricConstants.Vacancy.VacancyInSearchResults, request.VacancyReference, request.StartDate, request.EndDate, cancellationToken);
-
-            await Task.WhenAll(viewMetricsTask, startedMetricsTask, submittedMetricsTask, searchResultsMetricsTask);
+            var metricsResult = await MetricServices.GetVacancyMetrics(request.StartDate, request.EndDate, cancellationToken);
+            
+            var vacancyMetrics = metricsResult.GroupBy(x => x.VacancyReference)
+                .Select(metrics => new GetVacancyMetricsQueryResult.VacancyMetric
+                {
+                    VacancyReference = metrics.Key,
+                    ViewsCount =
+                        metrics.Any(fil => fil.Name!.Contains($"{MetricConstants.Vacancy.Views}",
+                            StringComparison.InvariantCultureIgnoreCase))
+                            ? metrics.Where(fil => fil.Name!.Contains($"{MetricConstants.Vacancy.Views}",
+                                StringComparison.InvariantCultureIgnoreCase)).Select(x => x.Count).FirstOrDefault()
+                            : 0,
+                    ApplicationStartedCount =
+                        metrics.Any(fil => fil.Name!.Contains($"{MetricConstants.Vacancy.Started}",
+                            StringComparison.InvariantCultureIgnoreCase))
+                            ? metrics.Where(fil => fil.Name!.Contains($"{MetricConstants.Vacancy.Started}",
+                                StringComparison.InvariantCultureIgnoreCase)).Select(x => x.Count).FirstOrDefault()
+                            : 0,
+                    ApplicationSubmittedCount =
+                        metrics.Any(fil => fil.Name!.Contains($"{MetricConstants.Vacancy.Submitted}",
+                            StringComparison.InvariantCultureIgnoreCase))
+                            ? metrics.Where(fil => fil.Name!.Contains($"{MetricConstants.Vacancy.Submitted}",
+                                StringComparison.InvariantCultureIgnoreCase)).Select(x => x.Count).FirstOrDefault()
+                            : 0,
+                    SearchResultsCount =
+                        metrics.Any(fil => fil.Name!.Contains($"{MetricConstants.Vacancy.SearchResults}",
+                            StringComparison.InvariantCultureIgnoreCase))
+                            ? metrics.Where(fil => fil.Name!.Contains($"{MetricConstants.Vacancy.SearchResults}",
+                                StringComparison.InvariantCultureIgnoreCase)).Select(x => x.Count).FirstOrDefault()
+                            : 0,
+                })
+                .ToList();
 
             return new ValidatedResponse<GetVacancyMetricsQueryResult>(new GetVacancyMetricsQueryResult
             {
-                ViewsCount = viewMetricsTask.Result,
-                ApplicationStartedCount = startedMetricsTask.Result,
-                ApplicationSubmittedCount = submittedMetricsTask.Result,
-                SearchResultsCount = searchResultsMetricsTask.Result
+               VacancyMetrics = vacancyMetrics.ToList()
             });
         }
     }

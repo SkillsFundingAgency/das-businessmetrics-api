@@ -7,14 +7,15 @@
         public static class CustomDimensions
         {
             public const string VacancyReference = "vacancy.reference";
+            public const string VacancyDimensionName = "vacancyReference";
         }
 
         public static class Vacancy
         {
-            public const string VacancyViews = "VacancyViews";
-            public const string VacancyStarted = "VacancyStarted";
-            public const string VacancySubmitted = "VacancySubmitted";
-            public const string VacancyInSearchResults = "VacancyInSearchResults";
+            public const string Views = "vacancyReference.views";
+            public const string Started = "vacancyReference.started";
+            public const string Submitted = "vacancyReference.submitted";
+            public const string SearchResults = "vacancyReference.search";
         }
     }
 }

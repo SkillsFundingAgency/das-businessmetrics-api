@@ -15,22 +15,19 @@ namespace SFA.DAS.BusinessMetrics.Api.UnitTests.Controllers.Vacancy
 
         [Test, MoqAutoData]
         public async Task GetVacancyMetrics_InvokesQueryHandler(
-            string serviceName,
-            string vacancyReference,
             DateTime startDate,
             DateTime endDate,
             [Frozen] Mock<IMediator> mediatorMock,
             [Greedy] VacanciesController sut,
             GetVacancyMetricsQueryResult getMetricNamesQueryResult)
         {
-            await sut.GetVacancyMetrics(serviceName, vacancyReference, startDate, endDate);
+            await sut.GetVacancyMetrics(startDate, endDate);
             mediatorMock.Verify(m => m.Send(It.IsAny<GetVacancyMetricsQuery>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
         [MoqAutoData]
         public async Task GetVacancyMetrics_HandlerReturnsData_ReturnsOkResponse(
-            string serviceName,
             string vacancyReference,
             DateTime startDate,
             DateTime endDate,
@@ -41,14 +38,12 @@ namespace SFA.DAS.BusinessMetrics.Api.UnitTests.Controllers.Vacancy
             var response = new ValidatedResponse<GetVacancyMetricsQueryResult>(getMetricNamesQueryResult);
 
             mediatorMock.Setup(m => m.Send(It.Is<GetVacancyMetricsQuery>(q =>
-                        q.ServiceName == serviceName
-                        && q.VacancyReference == vacancyReference
-                        && q.StartDate == startDate
+                        q.StartDate == startDate
                         && q.EndDate == endDate),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
 
-            var result = await sut.GetVacancyMetrics(serviceName, vacancyReference, startDate, endDate);
+            var result = await sut.GetVacancyMetrics(startDate, endDate);
 
             result.As<OkObjectResult>().Should().NotBeNull();
             result.As<OkObjectResult>().Value.Should().Be(getMetricNamesQueryResult);

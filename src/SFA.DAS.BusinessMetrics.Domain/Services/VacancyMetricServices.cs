@@ -3,6 +3,7 @@ using Azure.Monitor.Query;
 using Microsoft.Extensions.Options;
 using SFA.DAS.BusinessMetrics.Domain.Configuration;
 using SFA.DAS.BusinessMetrics.Domain.Interfaces.Services;
+using SFA.DAS.BusinessMetrics.Domain.Models;
 
 namespace SFA.DAS.BusinessMetrics.Domain.Services
 {
@@ -15,70 +16,29 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
         private readonly MetricsConfiguration _metricConfiguration = metricsConfigurationOptions.Value;
         private readonly LogAnalyticsWorkSpace _logAnalyticsWorkSpaceConfiguration = logWorkspaceConfigurationOptions.Value;
 
-        public async Task<long> GetVacancyMetrics(
-            string serviceName,
-            string action,
-            string vacancyReference,
+        public async Task<List<VacancyMetrics>> GetVacancyMetrics(
             DateTime startDate,
             DateTime endDate,
             CancellationToken token)
         {
-            var counterName = GetCounterName(serviceName, action);
-
             var result = await queryClient.ProcessQuery(
                 new ResourceIdentifier(_logAnalyticsWorkSpaceConfiguration.Identifier),
                 $"{Constants.MetricConstants.CustomMetricsTableName} " +
-                $"| where Name == '{counterName}'" +
-                $"| where Properties.['{Constants.MetricConstants.CustomDimensions.VacancyReference}'] == '{vacancyReference}'" +
-                $"| summarize sum(ItemCount)",
+                $"| where Name contains '{Constants.MetricConstants.CustomDimensions.VacancyDimensionName}'" +
+                $"| extend CustomDimension = tostring(Properties.['{Constants.MetricConstants.CustomDimensions.VacancyReference}'])" +
+                $"| summarize Count = count() by CustomDimension, Name" +
+                $"| order by CustomDimension",
                 new QueryTimeRange(startDate, endDate),
                 token);
 
-            if (result is { Rows.Count: > 0 })
-            {
-                return result.Rows[0].GetInt64("sum_ItemCount") ?? 0;
-            }
-
-            return 0;
-        }
-
-        public async Task<List<string?>> GetAllVacancies(DateTime startDate, DateTime endDate,
-            CancellationToken token)
-        {
-            var filter = BuildQueryFilter();
-
-            var result = await queryClient.ProcessQuery(
-                new ResourceIdentifier(_logAnalyticsWorkSpaceConfiguration.Identifier),
-                $"{Constants.MetricConstants.CustomMetricsTableName} " +
-                $"| {filter} " +
-                $"| project Properties.['{Constants.MetricConstants.CustomDimensions.VacancyReference}']",
-                new QueryTimeRange(startDate, endDate),
-                token);
-
-            return result is not {Rows.Count: > 0} 
-                ? [] 
-                : result.Rows.Select(resultRow => Convert.ToString(resultRow[0]))
-                    .Where(vacancyReference => !string.IsNullOrEmpty(vacancyReference))
-                    .Distinct()
-                    .ToList();
-        }
-
-        private string BuildQueryFilter()
-        {
-            var counterNames = _metricConfiguration.CustomMetrics.Select(fil => fil.CounterName).ToList();
-
-            return counterNames.Aggregate("where ", (current, counterName) => current + (counterNames.IndexOf(counterName) == counterNames.Count - 1
-                ? $"Name == '{counterName}' "
-                : $"Name == '{counterName}' or "));
-        }
-
-        private string GetCounterName(string serviceName, string action)
-        {
-            var config = _metricConfiguration.CustomMetrics.Find(fil =>
-                fil.ServiceName.Equals(serviceName, StringComparison.InvariantCultureIgnoreCase)
-                && fil.Action.Equals(action, StringComparison.InvariantCultureIgnoreCase));
-
-            return config is not null ? config.CounterName : string.Empty;
+            return result is not { Rows.Count: > 0 }
+                ? []
+                : result.Rows.Select(row => new VacancyMetrics
+                {
+                    VacancyReference = Convert.ToString(row[0]),
+                    Name = Convert.ToString(row[1]),
+                    Count = Convert.ToInt64(row[2]),
+                }).ToList();
         }
     }
 }
