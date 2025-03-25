@@ -8,9 +8,6 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
     {
         private readonly MetricsConfiguration _metricsConfiguration = metricsConfigurationOptions.Value;
 
-        public List<string> GetMetricServiceNames()
-        {
-            return _metricsConfiguration.CustomMetrics.Select(fil => fil.ServiceName).Distinct().ToList();
-        }
+        public List<string> GetMetricServiceNames() => [.. _metricsConfiguration.CustomMetrics.Select(fil => fil.ServiceName).Distinct()];
     }
 }

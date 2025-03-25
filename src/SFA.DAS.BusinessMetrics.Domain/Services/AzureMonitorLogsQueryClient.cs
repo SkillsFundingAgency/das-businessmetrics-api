@@ -30,7 +30,7 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
                 {
                     Retry = { NetworkTimeout = _networkTimeout, MaxRetries = MaxRetries, Delay = _delay }
                 }),
-                new VisualStudioCodeCredential(options: new VisualStudioCodeCredentialOptions()
+                new VisualStudioCodeCredential(options: new VisualStudioCodeCredentialOptions
                 {
                     Retry = { NetworkTimeout = _networkTimeout, MaxRetries = MaxRetries, Delay = _delay }
                 })));

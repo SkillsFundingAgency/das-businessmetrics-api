@@ -22,11 +22,14 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
 
         public async Task<HealthCheckResult> GetHealthCheck(CancellationToken token)
         {
+            var query = @"
+                Heartbeat
+                | summarize count() by Computer
+                | project Computer";
+
             var result = await _queryClient.ProcessQuery(
                 new ResourceIdentifier(_logAnalyticsWorkSpaceConfiguration.Identifier),
-                $"Heartbeat " +
-                $"| summarize count() by Computer " +
-                $"| project Computer",
+                query,
                 new QueryTimeRange(DateTimeOffset.UtcNow.AddMinutes(-30), DateTimeOffset.UtcNow),
                 token);
 

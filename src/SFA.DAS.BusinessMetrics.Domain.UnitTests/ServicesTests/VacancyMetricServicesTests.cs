@@ -3,7 +3,6 @@ using Azure.Core;
 using Azure.Monitor.Query;
 using Azure.Monitor.Query.Models;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using SFA.DAS.BusinessMetrics.Domain.Configuration;
@@ -23,9 +22,7 @@ namespace SFA.DAS.BusinessMetrics.Domain.UnitTests.ServicesTests
             DateTime endDate,
             List<VacancyMetrics> vacancyMetrics,
             LogAnalyticsWorkSpace logAnalyticsWorkSpace,
-            MetricsConfiguration metricsConfiguration,
             [Frozen] Mock<ILogsQueryClient> mockLogsQueryClient,
-            [Frozen] Mock<ILogger<VacancyMetricServices>> mockLogger,
             [Frozen] Mock<IOptions<LogAnalyticsWorkSpace>> mockLogAnalyticsWorkspace,
             [Frozen] Mock<IOptions<MetricsConfiguration>> mockMetricsConfigurationOptions)
         {
@@ -40,13 +37,12 @@ namespace SFA.DAS.BusinessMetrics.Domain.UnitTests.ServicesTests
             var logsTable = MonitorQueryModelFactory.LogsTable("tester", logsTableColumns.AsEnumerable(), logsTableRows.AsEnumerable());
 
             mockLogAnalyticsWorkspace.Setup(ap => ap.Value).Returns(logAnalyticsWorkSpace);
-            mockMetricsConfigurationOptions.Setup(ap => ap.Value).Returns(metricsConfiguration);
 
             mockLogsQueryClient.Setup(x => x.ProcessQuery(It.IsAny<ResourceIdentifier>(), It.IsAny<string>(),
                     It.IsAny<QueryTimeRange>(), CancellationToken.None))
                 .ReturnsAsync(logsTable);
 
-            var sut = new VacancyMetricServices(mockMetricsConfigurationOptions.Object, mockLogAnalyticsWorkspace.Object, mockLogsQueryClient.Object);
+            var sut = new VacancyMetricServices(mockLogAnalyticsWorkspace.Object, mockLogsQueryClient.Object);
 
             var actual = await sut.GetVacancyMetrics(startDate, endDate, CancellationToken.None);
 

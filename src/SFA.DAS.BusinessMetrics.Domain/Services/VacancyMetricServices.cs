@@ -8,12 +8,10 @@ using SFA.DAS.BusinessMetrics.Domain.Models;
 namespace SFA.DAS.BusinessMetrics.Domain.Services
 {
     public class VacancyMetricServices(
-        IOptions<MetricsConfiguration> metricsConfigurationOptions,
         IOptions<LogAnalyticsWorkSpace> logWorkspaceConfigurationOptions,
         ILogsQueryClient queryClient)
         : IVacancyMetricServices
     {
-        private readonly MetricsConfiguration _metricConfiguration = metricsConfigurationOptions.Value;
         private readonly LogAnalyticsWorkSpace _logAnalyticsWorkSpaceConfiguration = logWorkspaceConfigurationOptions.Value;
 
         public async Task<List<VacancyMetrics>> GetVacancyMetrics(
@@ -21,24 +19,26 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
             DateTime endDate,
             CancellationToken token)
         {
+            var query = $"{Constants.MetricConstants.CustomMetricsTableName} " +
+                       $"| where Name contains '{Constants.MetricConstants.CustomDimensions.VacancyDimensionName}' " +
+                       $"| extend CustomDimension = tostring(Properties.['{Constants.MetricConstants.CustomDimensions.VacancyReference}']) " +
+                       $"| summarize Count = count() by CustomDimension, Name " +
+                       $"| order by CustomDimension ";
+
             var result = await queryClient.ProcessQuery(
                 new ResourceIdentifier(_logAnalyticsWorkSpaceConfiguration.Identifier),
-                $"{Constants.MetricConstants.CustomMetricsTableName} " +
-                $"| where Name contains '{Constants.MetricConstants.CustomDimensions.VacancyDimensionName}'" +
-                $"| extend CustomDimension = tostring(Properties.['{Constants.MetricConstants.CustomDimensions.VacancyReference}'])" +
-                $"| summarize Count = count() by CustomDimension, Name" +
-                $"| order by CustomDimension",
+                query,
                 new QueryTimeRange(startDate, endDate),
-                token);
+                token);            
 
             return result is not { Rows.Count: > 0 }
                 ? []
-                : result.Rows.Select(row => new VacancyMetrics
+                : [.. result.Rows.Select(row => new VacancyMetrics
                 {
                     VacancyReference = Convert.ToString(row[0]),
                     Name = Convert.ToString(row[1]),
                     Count = Convert.ToInt64(row[2]),
-                }).ToList();
+                })];
         }
     }
 }
