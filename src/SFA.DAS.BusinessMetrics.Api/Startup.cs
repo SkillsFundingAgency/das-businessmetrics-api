@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SFA.DAS.Api.Common.AppStart;
@@ -11,6 +10,7 @@ using SFA.DAS.Configuration.AzureTableStorage;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using Asp.Versioning;
+using Microsoft.OpenApi;
 
 namespace SFA.DAS.BusinessMetrics.Api
 {
