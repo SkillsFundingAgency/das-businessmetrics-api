@@ -20,8 +20,8 @@
 	  <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.3" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.3" />
-	  <PackageReference Include="SFA.DAS.Api.Common" Version="17.1.164" />
-	  <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="17.1.138" />
+	  <PackageReference Include="SFA.DAS.Api.Common" Version="17.1.165-prerelease-9" />
+	  <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="17.1.165-prerelease-4" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.4" />
 	  <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.1.4" />
 	  <PackageReference Include="System.Drawing.Common" Version="10.0.3" />
