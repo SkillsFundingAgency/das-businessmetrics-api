@@ -10,7 +10,7 @@ using SFA.DAS.Configuration.AzureTableStorage;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using Asp.Versioning;
-using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 
 namespace SFA.DAS.BusinessMetrics.Api
 {

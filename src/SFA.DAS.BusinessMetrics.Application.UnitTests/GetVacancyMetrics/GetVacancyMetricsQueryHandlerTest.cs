@@ -1,10 +1,6 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using SFA.DAS.BusinessMetrics.Application.GetVacancyMetrics.Queries;
+﻿using SFA.DAS.BusinessMetrics.Application.GetVacancyMetrics.Queries;
 using SFA.DAS.BusinessMetrics.Domain.Interfaces.Services;
 using SFA.DAS.BusinessMetrics.Domain.Models;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.BusinessMetrics.Application.UnitTests.GetVacancyMetrics
 {
