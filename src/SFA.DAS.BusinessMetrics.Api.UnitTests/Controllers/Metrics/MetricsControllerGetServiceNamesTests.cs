@@ -1,12 +1,8 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using SFA.DAS.BusinessMetrics.Api.Controllers;
 using SFA.DAS.BusinessMetrics.Application.GetMetricNames.Queries;
 using SFA.DAS.BusinessMetrics.Application.Mediatr.Responses;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.BusinessMetrics.Api.UnitTests.Controllers.Metrics
 {

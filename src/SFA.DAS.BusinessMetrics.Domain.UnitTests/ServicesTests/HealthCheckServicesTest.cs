@@ -1,16 +1,12 @@
-﻿using AutoFixture.NUnit3;
-using Azure.Core;
+﻿using Azure.Core;
 using Azure.Monitor.Query;
 using Azure.Monitor.Query.Models;
-using FluentAssertions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moq;
 using SFA.DAS.BusinessMetrics.Domain.Configuration;
 using SFA.DAS.BusinessMetrics.Domain.Interfaces.Services;
 using SFA.DAS.BusinessMetrics.Domain.Services;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.BusinessMetrics.Domain.UnitTests.ServicesTests
 {

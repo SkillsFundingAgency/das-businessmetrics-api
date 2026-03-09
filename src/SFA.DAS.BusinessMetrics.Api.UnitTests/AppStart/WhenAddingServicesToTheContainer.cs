@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using SFA.DAS.BusinessMetrics.Api.AppStart;
 using SFA.DAS.BusinessMetrics.Application.Extensions;
 using SFA.DAS.BusinessMetrics.Application.GetMetricNames.Queries;
