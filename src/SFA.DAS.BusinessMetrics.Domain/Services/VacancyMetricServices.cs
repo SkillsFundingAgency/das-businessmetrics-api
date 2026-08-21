@@ -26,13 +26,13 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
         public async Task<List<VacancyMetrics>> GetVacancyMetrics(
             DateTime startDate,
             DateTime endDate,
-            CancellationToken cancellationToken)
+            CancellationToken token)
         {
             var result = await queryClient.ProcessQuery(
                 new ResourceIdentifier(_logAnalyticsWorkSpaceConfiguration.Identifier),
                 VacancyMetricsQuery,
                 new QueryTimeRange(startDate, endDate),
-                cancellationToken);
+                token);
 
             if (result is not { Rows.Count: > 0 })
                 return [];

@@ -11,13 +11,13 @@ namespace SFA.DAS.BusinessMetrics.Domain.Services
             ResourceIdentifier resourceIdentifier,
             string query,
             QueryTimeRange timeRange,
-            CancellationToken cancellationToken)
+            CancellationToken token)
         {
             var result = await client.QueryResourceAsync(
                 resourceIdentifier,
                 query,
                 timeRange,
-                cancellationToken: cancellationToken);
+                cancellationToken: token);
 
             return result.Value.Table;
         }
