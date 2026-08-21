@@ -16,6 +16,7 @@
             public const string Started = "vacancyReference.started";
             public const string Submitted = "vacancyReference.submitted";
             public const string SearchResults = "vacancyReference.search";
+            public const string Saved = "vacancyReference.saved";
         }
     }
 }

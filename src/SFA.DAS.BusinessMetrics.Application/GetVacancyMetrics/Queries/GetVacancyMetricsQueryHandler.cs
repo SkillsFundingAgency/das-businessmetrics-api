@@ -19,7 +19,8 @@ namespace SFA.DAS.BusinessMetrics.Application.GetVacancyMetrics.Queries
                     ViewsCount = GetMetricCount(metrics, MetricConstants.Vacancy.Views),
                     ApplicationStartedCount = GetMetricCount(metrics, MetricConstants.Vacancy.Started),
                     ApplicationSubmittedCount = GetMetricCount(metrics, MetricConstants.Vacancy.Submitted),
-                    SearchResultsCount = GetMetricCount(metrics, MetricConstants.Vacancy.SearchResults)
+                    SearchResultsCount = GetMetricCount(metrics, MetricConstants.Vacancy.SearchResults),
+                    SavedCount = GetMetricCount(metrics, MetricConstants.Vacancy.Saved),
                 })
                 .ToList();
 
