@@ -15,21 +15,19 @@ namespace SFA.DAS.BusinessMetrics.Domain.Extensions
         private static readonly TimeSpan NetworkTimeout = TimeSpan.FromSeconds(1);
         private static readonly TimeSpan RetryDelay = TimeSpan.FromMilliseconds(100);
 
-        public static IServiceCollection RegisterServices(this IServiceCollection services)
+        public static void RegisterServices(this IServiceCollection services)
         {
             services.AddSingleton(_ => new LogsQueryClient(BuildCredential()));
             services.AddTransient<ILogsQueryClient, AzureMonitorLogsQueryClient>();
             services.AddTransient<IMetricServices, MetricServices>();
             services.AddTransient<IVacancyMetricServices, VacancyMetricServices>();
             services.AddTransient<IHealthCheckServices, HealthCheckServices>();
-
-            return services;
         }
 
         private static ChainedTokenCredential BuildCredential()
         {
             return new ChainedTokenCredential(
-                new ManagedIdentityCredential(options: WithRetry(new TokenCredentialOptions())),
+                new ManagedIdentityCredential(options: WithRetry(new ManagedIdentityCredentialOptions())),
                 new AzureCliCredential(options: WithRetry(new AzureCliCredentialOptions())),
                 new VisualStudioCredential(options: WithRetry(new VisualStudioCredentialOptions())),
                 new VisualStudioCodeCredential(options: WithRetry(new VisualStudioCodeCredentialOptions())));
