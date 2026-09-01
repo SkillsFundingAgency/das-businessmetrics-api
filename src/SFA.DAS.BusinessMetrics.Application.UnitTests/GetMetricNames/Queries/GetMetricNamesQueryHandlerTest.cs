@@ -13,7 +13,7 @@ namespace SFA.DAS.BusinessMetrics.Application.UnitTests.GetMetricNames.Queries
         {
             metricServices.Setup(a => a.GetMetricServiceNames()).Returns(serviceNames);
 
-            var response = await sut.Handle(new GetMetricNamesQuery(), new CancellationToken());
+            var response = await sut.Handle(new GetMetricNamesQuery(), CancellationToken.None);
             
             response.Result.ServiceNames.Should().BeEquivalentTo(serviceNames);
             response.Result.ServiceNames.Count.Should().Be(serviceNames.Count);
